@@ -63,36 +63,10 @@ lahtrite püsivaid indekseid, seega segamine tulemust ei mõjuta.
 `samples/columnconnector-naidised.xml` sisaldab näidisküsimusi Moodle XML
 vormingus (impordi küsimustepanka).
 
-## Testid ja CI
-
-Ühiktestid on kaustas `tests/`. GitHubis käivitab
-`.github/workflows/ci.yml` [moodle-plugin-ci](https://github.com/moodlehq/moodle-plugin-ci)
-kontrollid (phplint, phpcs Moodle'i standard, phpdoc, PHPUnit, grunt jm)
-Moodle 4.1 / 4.5 / 5.0 ja PHP 8.1–8.3 vastu.
-
-## Failistruktuur
-
-    version.php                    — plugina versioon ja metaandmed
-    questiontype.php               — salvestus/laadimine, XML import/eksport
-    question.php                   — küsimuse definitsioon ja hindamine
-    edit_columnconnector_form.php  — toimetamise vorm + H5P-import
-    renderer.php                   — kuvamine
-    styles.css                     — stiilid
-    classes/h5p_importer.php       — H5P (1.3/2.0) → mudel teisendus
-    classes/privacy/provider.php   — privaatsus (ei salvesta isikuandmeid)
-    db/install.xml, db/upgrade.php — andmebaas
-    amd/src/player.js              — interaktiivne joonistamine (õpilane)
-    amd/src/editor.js              — visuaalne autoritoimetaja (õpetaja)
-    lang/                          — 7 keelefaili
-    backup/moodle2/                — varundus ja taastamine
-    tests/                         — abiklass ja ühiktestid
-    samples/                       — näidisküsimused (Moodle XML)
-
 ## Litsents
 
 GNU GPL v3 või uuem — vaata [LICENSE](LICENSE).
 
 ## Autor
 
-© 2026 Urmas Vessin. Ikoon (`pix/icon.svg`) on autori enda oma.
-Käitumine ja andmemudel on tuletatud H5P sisutüübist H5P.ColumnConnector.
+© 2026 Urmas Vessin. Käitumine ja andmemudel on tuletatud H5P sisutüübist H5P.ColumnConnector.
