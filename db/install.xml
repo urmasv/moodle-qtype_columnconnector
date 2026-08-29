@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="question/type/columnconnector/db" VERSION="2026061700" COMMENT="qtype_columnconnector plugina andmebaasi struktuur."
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd">
+  <TABLES>
+    <TABLE NAME="qtype_columnconnector" COMMENT="Küsimusetüübi columnconnector seaded ja sisu.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Viide küsimusele."/>
+        <FIELD NAME="numcolumns" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="2" SEQUENCE="false" COMMENT="Tulpade arv (2-4)."/>
+        <FIELD NAME="layoutmode" TYPE="char" LENGTH="16" NOTNULL="true" DEFAULT="columns" SEQUENCE="false" COMMENT="columns või rows."/>
+        <FIELD NAME="linestyle" TYPE="char" LENGTH="16" NOTNULL="true" DEFAULT="curved" SEQUENCE="false" COMMENT="curved või straight."/>
+        <FIELD NAME="showclear" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Kas näidata nupu 'Tühista ühendused'."/>
+        <FIELD NAME="showmissing" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Kas näidata õppijale puuduvaid (oranže) ühendusi pärast esitamist."/>
+        <FIELD NAME="correctpoints" TYPE="number" LENGTH="10" DECIMALS="5" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Punktid õige ühenduse eest."/>
+        <FIELD NAME="incorrectpoints" TYPE="number" LENGTH="10" DECIMALS="5" NOTNULL="true" DEFAULT="-1" SEQUENCE="false" COMMENT="Punktid vale ühenduse eest."/>
+        <FIELD NAME="missingpoints" TYPE="number" LENGTH="10" DECIMALS="5" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Punktid puuduva ühenduse eest."/>
+        <FIELD NAME="instructions" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Juhis õppijale (HTML)."/>
+        <FIELD NAME="instructionsformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="content" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Tulpade, lahtrite ja õigete ühenduste JSON-mudel."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="questionid" TYPE="foreign-unique" FIELDS="questionid" REFTABLE="question" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
