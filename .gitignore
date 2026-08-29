@@ -1,0 +1,19 @@
+# Sõltuvused ja ehitusprügi
+/vendor/
+/node_modules/
+/moodle/
+/moodledata/
+
+# Toimetajate ja OS-i failid
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*~
+*.bak
+*.orig
+
+# Logid ja ajutised failid
+*.log
+/tmp/
