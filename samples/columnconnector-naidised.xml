@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+  <question type="columnconnector">
+    <name><text>Balti riigid: lipud ja pealinnad</text></name>
+    <questiontext format="html"><text><![CDATA[<p></p>]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <numcolumns>4</numcolumns>
+    <layoutmode>columns</layoutmode>
+    <linestyle>curved</linestyle>
+    <showclear>1</showclear>
+    <correctpoints>1.0</correctpoints>
+    <incorrectpoints>-1.0</incorrectpoints>
+    <missingpoints>0.0</missingpoints>
+    <instructionsformat>1</instructionsformat>
+    <instructions><text><![CDATA[<p>Ühenda lahtrid naabertulpades olevate lahtritega. Üks lahter võib olla ühendatud mitme naabertulba lahtriga.</p>]]></text></instructions>
+    <content><text><![CDATA[{"columns":[{"title":"Pealinna vaade","cells":[{"text":"<p>Vanalinn</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Old_Town_of_Tallinn%2C_Tallinn%2C_Estonia_-_panoramio_%2858_cropped%29.jpg/330px-Old_Town_of_Tallinn%2C_Tallinn%2C_Estonia_-_panoramio_%2858_cropped%29.jpg","imageposition":"above","imageleftsize":"small","alt":""},{"text":"","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Riga_%2833844464828%29.jpg/330px-Riga_%2833844464828%29.jpg","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>Alumine loss</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Valdovu_by_Augustas_Didzgalvis.jpg/250px-Valdovu_by_Augustas_Didzgalvis.jpg","imageposition":"above","imageleftsize":"small","alt":""}]},{"title":"Pealinna nimi","cells":[{"text":"<p>Tallinn</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>Riia</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>Vilnius</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""}]},{"title":"Riigi kaart","cells":[{"text":"<p style=\"text-align:center;\">Oma maa</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/LocationEstonia.svg/120px-LocationEstonia.svg.png","imageposition":"left","imageleftsize":"medium","alt":""},{"text":"<p>Balti riikidest keskmine.</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/LocationLatvia.svg/120px-LocationLatvia.svg.png","imageposition":"left","imageleftsize":"medium","alt":""},{"text":"<p>Võib lugeda ka Kesk-Euroopaks.</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/LocationLithuania.svg/120px-LocationLithuania.svg.png","imageposition":"left","imageleftsize":"medium","alt":""}]},{"title":"","cells":[{"text":"<p>Eesti</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flag_of_Estonia.svg/250px-Flag_of_Estonia.svg.png","imageposition":"left","imageleftsize":"small","alt":""},{"text":"<p>Läti</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Flag_of_Latvia.svg/250px-Flag_of_Latvia.svg.png","imageposition":"left","imageleftsize":"small","alt":""},{"text":"<p>Leedu</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Flag_of_Lithuania.svg/250px-Flag_of_Lithuania.svg.png","imageposition":"left","imageleftsize":"small","alt":""}]}],"answerkey":[{"from":{"col":0,"row":0},"to":{"col":1,"row":0}},{"from":{"col":0,"row":1},"to":{"col":1,"row":1}},{"from":{"col":0,"row":2},"to":{"col":1,"row":2}},{"from":{"col":1,"row":0},"to":{"col":2,"row":0}},{"from":{"col":1,"row":1},"to":{"col":2,"row":1}},{"from":{"col":1,"row":2},"to":{"col":2,"row":2}},{"from":{"col":2,"row":0},"to":{"col":3,"row":0}},{"from":{"col":2,"row":1},"to":{"col":3,"row":1}},{"from":{"col":2,"row":2},"to":{"col":3,"row":2}}]}]]></text></content>
+  </question>
+  <question type="columnconnector">
+    <name><text>Mida tähed märgivad</text></name>
+    <questiontext format="html"><text><![CDATA[<p></p>]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <numcolumns>3</numcolumns>
+    <layoutmode>columns</layoutmode>
+    <linestyle>curved</linestyle>
+    <showclear>1</showclear>
+    <correctpoints>1.0</correctpoints>
+    <incorrectpoints>-1.0</incorrectpoints>
+    <missingpoints>0.0</missingpoints>
+    <instructionsformat>1</instructionsformat>
+    <instructions><text><![CDATA[<p>Ühenda lahtrid naabertulpades olevate lahtritega. Üks lahter võib olla ühendatud mitme naabertulba lahtriga.</p>]]></text></instructions>
+    <content><text><![CDATA[{"columns":[{"title":"","cells":[{"text":"<p>ruutfunktsioon</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( { (a-b) }^2 \\)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( { (a+b) }^2 \\)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>kolmnurga pindala</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>ristküliku pindala</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""}]},{"title":"","cells":[{"text":"<p>\\( {a}^2-2ab+{b}^2 \\)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( {a}^2+2ab+{b}^2 \\)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( a{x}^2+bx+c=0 \\)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( S= \\dfrac{a \\cdot h}{2} \\)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( S= a \\cdot b \\)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""}]},{"title":"","cells":[{"text":"<p>\\( a \\) – kolmnurga alus&nbsp;</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( a \\) – ruutliikme kordaja</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( b \\) – lineaarliikme kordaja</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( a \\) – ristküliku pikkus</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p>\\( b \\) – ristküliku laius</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""}]}],"answerkey":[{"from":{"col":0,"row":1},"to":{"col":1,"row":0}},{"from":{"col":0,"row":2},"to":{"col":1,"row":1}},{"from":{"col":0,"row":0},"to":{"col":1,"row":2}},{"from":{"col":0,"row":3},"to":{"col":1,"row":3}},{"from":{"col":0,"row":4},"to":{"col":1,"row":4}},{"from":{"col":1,"row":3},"to":{"col":2,"row":0}},{"from":{"col":1,"row":2},"to":{"col":2,"row":1}},{"from":{"col":1,"row":2},"to":{"col":2,"row":2}},{"from":{"col":1,"row":4},"to":{"col":2,"row":3}},{"from":{"col":1,"row":4},"to":{"col":2,"row":4}}]}]]></text></content>
+  </question>
+  <question type="columnconnector">
+    <name><text>Valois'd ja Bourbonid</text></name>
+    <questiontext format="html"><text><![CDATA[<p></p>]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <numcolumns>4</numcolumns>
+    <layoutmode>rows</layoutmode>
+    <linestyle>straight</linestyle>
+    <showclear>1</showclear>
+    <correctpoints>1.0</correctpoints>
+    <incorrectpoints>-1.0</incorrectpoints>
+    <missingpoints>0.0</missingpoints>
+    <instructionsformat>1</instructionsformat>
+    <instructions><text><![CDATA[<p>Ühenda lapsed vanematega.</p>]]></text></instructions>
+    <content><text><![CDATA[{"columns":[{"title":"","cells":[{"text":"<p style=\"text-align:center;\"><strong>Henri II</strong> (1519 – 1559)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""}]},{"title":"","cells":[{"text":"<p style=\"text-align:center;\"><strong>François II</strong> (1544 – 1560)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p style=\"text-align:center;\"><strong>Charles IX</strong> (1550 – 1574)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p style=\"text-align:center;\"><strong>Henri III</strong> (1551 – 1589)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""},{"text":"<p style=\"text-align:center;\"><strong>Henri IV</strong> (1553 – 1610)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""}]},{"title":"","cells":[{"text":"<p style=\"text-align:center;\"><strong>Louis XIII</strong> (1601 – 1643)</p>","imageurl":"","imageposition":"above","imageleftsize":"small","alt":""}]},{"title":"","cells":[{"text":"<p style=\"text-align:center;\"><strong>Louis XIV</strong> (1638 – 1715)</p>","imageurl":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Louis_XIV_of_France.jpg/250px-Louis_XIV_of_France.jpg","imageposition":"above","imageleftsize":"small","alt":""}]}],"answerkey":[{"from":{"col":0,"row":0},"to":{"col":1,"row":0}},{"from":{"col":0,"row":0},"to":{"col":1,"row":1}},{"from":{"col":0,"row":0},"to":{"col":1,"row":2}},{"from":{"col":1,"row":3},"to":{"col":2,"row":0}},{"from":{"col":2,"row":0},"to":{"col":3,"row":0}}]}]]></text></content>
+  </question>
+</quiz>
