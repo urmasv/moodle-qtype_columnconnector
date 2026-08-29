@@ -1,0 +1,513 @@
+/* columnconnector küsimusetüübi stiilid. Kohandatud H5P.ColumnConnector põhjal. */
+
+.que.columnconnector .cc-instructions {
+    margin: 0 0 1em;
+    font-size: 1.125em;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.que.columnconnector .cc-instructions > p {
+    margin: 0;
+}
+
+.que.columnconnector .cc-container {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.que.columnconnector .cc-container *,
+.que.columnconnector .cc-container *::before,
+.que.columnconnector .cc-container *::after {
+    box-sizing: border-box;
+}
+
+.que.columnconnector .cc-stage {
+    position: relative;
+    min-height: 14rem;
+    padding: 1rem;
+    border: 1px solid #d9d9d9;
+    border-radius: 0.5rem;
+    background: #fff;
+    overflow: hidden;
+}
+
+.que.columnconnector .cc-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.que.columnconnector .cc-line {
+    fill: none;
+    stroke: #1f6feb;
+    stroke-width: 4;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.que.columnconnector .cc-line-correct {
+    stroke: #1f6feb;
+}
+
+.que.columnconnector .cc-line-incorrect {
+    stroke: #d64a4a;
+    stroke-dasharray: 2 8;
+}
+
+.que.columnconnector .cc-line-missing {
+    stroke: #bf8700;
+    pointer-events: none;
+    cursor: default;
+}
+
+.que.columnconnector .cc-feedback-icon {
+    pointer-events: none;
+}
+
+.que.columnconnector .cc-feedback-icon circle {
+    fill: #fff;
+    stroke-width: 2;
+}
+
+.que.columnconnector .cc-feedback-icon text {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.que.columnconnector .cc-feedback-icon-correct circle {
+    stroke: #1f6feb;
+}
+
+.que.columnconnector .cc-feedback-icon-correct text {
+    fill: #1f6feb;
+}
+
+.que.columnconnector .cc-feedback-icon-incorrect circle {
+    stroke: #d64a4a;
+}
+
+.que.columnconnector .cc-feedback-icon-incorrect text {
+    fill: #d64a4a;
+}
+
+.que.columnconnector .cc-columns {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    column-gap: 10%;
+    row-gap: 1rem;
+    align-items: start;
+}
+
+.que.columnconnector .cc-columns[data-column-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.que.columnconnector .cc-columns[data-column-count="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.que.columnconnector .cc-columns[data-column-count="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.que.columnconnector .cc-columns[data-column-count="5"] {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.que.columnconnector .cc-columns[data-column-count="6"] {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.que.columnconnector .cc-columns[data-column-count="7"] {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.que.columnconnector .cc-columns[data-column-count="5"],
+.que.columnconnector .cc-columns[data-column-count="6"],
+.que.columnconnector .cc-columns[data-column-count="7"] {
+    column-gap: 5%;
+}
+
+.que.columnconnector .cc-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.que.columnconnector .cc-column-title {
+    margin: 0 0 0.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.que.columnconnector .cc-column-title-empty {
+    visibility: hidden;
+}
+
+.que.columnconnector .cc-cell {
+    display: block;
+    width: 100%;
+    min-height: 4rem;
+    padding: 0.75rem;
+    border: 2px solid #cfcfcf;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+    color: inherit;
+    text-align: left;
+    font: inherit;
+    font-weight: 400;
+    cursor: pointer;
+    transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.que.columnconnector .cc-container:not(.cc-readonly) .cc-cell:hover,
+.que.columnconnector .cc-container:not(.cc-readonly) .cc-cell:focus {
+    border-color: #4b89dc;
+    box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.16);
+    outline: none;
+}
+
+.que.columnconnector .cc-readonly .cc-cell {
+    cursor: default;
+}
+
+.que.columnconnector .cc-cell-selected {
+    border-color: #1f6feb;
+    background: #eef6ff;
+    box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.22);
+}
+
+.que.columnconnector .cc-cell-valid-target {
+    border-style: dashed;
+}
+
+.que.columnconnector .cc-cell-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.que.columnconnector .cc-cell-content-image-left {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+/* Pildi suurus — kehtib nii teksti kohal kui ka tekstist vasakul. */
+.que.columnconnector .cc-cell-content.cc-cell-size-small:not(.cc-cell-content-image-left) .cc-cell-image {
+    max-width: 50%;
+}
+
+.que.columnconnector .cc-cell-content.cc-cell-size-medium:not(.cc-cell-content-image-left) .cc-cell-image {
+    max-width: 80%;
+}
+
+.que.columnconnector .cc-cell-content.cc-cell-size-large:not(.cc-cell-content-image-left) .cc-cell-image {
+    max-width: 100%;
+}
+
+.que.columnconnector .cc-cell-content-image-left.cc-cell-size-small .cc-cell-image {
+    flex: 0 0 25%;
+    max-width: 25%;
+    width: 25%;
+}
+
+.que.columnconnector .cc-cell-content-image-left.cc-cell-size-medium .cc-cell-image {
+    flex: 0 0 50%;
+    max-width: 50%;
+    width: 50%;
+}
+
+.que.columnconnector .cc-cell-content-image-left.cc-cell-size-large .cc-cell-image {
+    flex: 0 0 75%;
+    max-width: 75%;
+    width: 75%;
+}
+
+.que.columnconnector .cc-cell-content-image-left .cc-cell-text {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+}
+
+.que.columnconnector .cc-cell-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.35rem;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Teksti kohal oleva pildi joondus lahtris. */
+.que.columnconnector .cc-cell-content.cc-cell-align-center .cc-cell-image {
+    align-self: center;
+}
+
+.que.columnconnector .cc-cell-content.cc-cell-align-left .cc-cell-image {
+    align-self: flex-start;
+}
+
+.que.columnconnector .cc-cell-text {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    line-height: 1.35;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.que.columnconnector .cc-cell-text p {
+    margin: 0 0 0.4rem;
+}
+
+.que.columnconnector .cc-cell-text p:last-child {
+    margin-bottom: 0;
+}
+
+.que.columnconnector .cc-empty-column {
+    padding: 1rem;
+    border: 2px dashed #cfcfcf;
+    border-radius: 0.5rem;
+    background: #fafafa;
+    color: #666;
+    text-align: center;
+}
+
+.que.columnconnector .cc-controls {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.que.columnconnector .cc-sr-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Horisontaalne ridade paigutus. Sisemine mudel jääb tulbapõhiseks. */
+.que.columnconnector .cc-layout-rows .cc-columns {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+}
+
+.que.columnconnector .cc-layout-rows .cc-column {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    column-gap: 0.75rem;
+    row-gap: 0.75rem;
+    padding: 1rem 0;
+    border-top: 1px solid #d9d9d9;
+}
+
+.que.columnconnector .cc-layout-rows .cc-column:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.que.columnconnector .cc-layout-rows .cc-column-title {
+    flex: 0 0 100%;
+    width: 100%;
+    margin: 0;
+}
+
+.que.columnconnector .cc-layout-rows .cc-cell {
+    flex: 0 1 18rem;
+    width: auto;
+    max-width: 100%;
+}
+
+@media (max-width: 720px) {
+    .que.columnconnector .cc-stage {
+        overflow-x: auto;
+    }
+    .que.columnconnector .cc-columns[data-column-count="3"],
+    .que.columnconnector .cc-columns[data-column-count="4"],
+    .que.columnconnector .cc-columns[data-column-count="5"],
+    .que.columnconnector .cc-columns[data-column-count="6"],
+    .que.columnconnector .cc-columns[data-column-count="7"] {
+        min-width: 48rem;
+    }
+}
+
+/* Eelvaatejoon lahendamisel. */
+.que.columnconnector .cc-line-preview {
+    fill: none;
+    stroke: #737373;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 8 7;
+    opacity: 0.8;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
+/* ---- Visuaalne autoritoimetaja ---- */
+.cc-editor-root {
+    width: 100%;
+}
+
+.cc-editor-grid {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.cc-ed-column {
+    flex: 1 1 220px;
+    min-width: 220px;
+    border: 1px solid #d9d9d9;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    background: #fafbfc;
+}
+
+.cc-ed-colhead {
+    margin-bottom: 0.5rem;
+}
+
+.cc-ed-title {
+    margin-bottom: 0.75rem;
+}
+
+.cc-ed-cells {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.cc-ed-cell {
+    border: 1px solid #cfd4da;
+    border-radius: 0.4rem;
+    padding: 0.5rem;
+    background: #fff;
+}
+
+.cc-ed-cellhead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+}
+
+.cc-ed-cellnum {
+    font-weight: 700;
+    color: #555;
+}
+
+.cc-ed-tools {
+    display: flex;
+    gap: 0.15rem;
+}
+
+.cc-ed-tool {
+    padding: 0 0.35rem;
+    line-height: 1.2;
+}
+
+.cc-ed-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.cc-ed-flabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0.2rem 0 0;
+    color: #444;
+}
+
+.cc-ed-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.cc-ed-half {
+    flex: 1 1 50%;
+}
+
+.cc-ed-conn {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #d0d7de;
+}
+
+.cc-ed-conn-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #1356a3;
+}
+
+.cc-ed-conn-empty {
+    font-size: 0.8rem;
+    color: #777;
+    font-style: italic;
+}
+
+.cc-ed-conn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.cc-ed-conn-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.cc-ed-conn-item input {
+    margin-top: 0.2rem;
+}
+
+/* Toimetaja: lahtri pildivalik. */
+.cc-ed-imgrow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.cc-ed-imgrow .cc-ed-imgsel {
+    flex: 1 1 auto;
+    min-width: 120px;
+}
+.cc-ed-imgrefresh {
+    flex: 0 0 auto;
+    line-height: 1;
+}
+.cc-ed-imgpreview {
+    flex: 0 0 auto;
+    max-width: 48px;
+    max-height: 48px;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    object-fit: cover;
+}
