@@ -5,7 +5,7 @@ Tulpi (või ridu) on 2–7, iga lahter võib sisaldada rikasteksti ja pilti.
 Vastust hinnatakse autori määratud õigete ühenduste järgi. Käitumine kordab
 H5P sisutüüpi **H5P.ColumnConnector**.
 
-![Moodle plugin CI](https://github.com/urmasv/moodle-qtype_columnconnector/pix/icon.svg)
+![Moodle plugin CI](https://github.com/urmasv/moodle-qtype_columnconnector/actions/workflows/ci.yml/badge.svg)
 
 ## Võimalused
 
