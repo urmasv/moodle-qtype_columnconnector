@@ -83,6 +83,8 @@ define([], function() {
             || document.querySelector('[name="contentjson"]');
         this.numSelect = document.getElementById(config.numColumnsId)
             || document.querySelector('[name="numcolumns"]');
+        this.layoutSelect = document.getElementById(config.layoutSelectId)
+            || document.querySelector('[name="layoutmode"]');
         if (!this.root) {
             return;
         }
@@ -107,10 +109,50 @@ define([], function() {
             });
         }
 
+        // Paigutuse (tulbad/read) muutmisel uuenda õpetaja vaate sõnastust.
+        if (this.layoutSelect) {
+            this.layoutSelect.addEventListener('change', function() {
+                self.updateCountLabel();
+                self.render();
+            });
+        }
+
         this.render();
         this.serialize();
+        this.updateCountLabel();
         this.loadImageFiles();
     }
+
+    /**
+     * @return {Boolean} kas paigutus on „read" (mitte „tulbad")
+     */
+    Editor.prototype.isRows = function() {
+        return !!(this.layoutSelect && this.layoutSelect.value === 'rows');
+    };
+
+    /**
+     * Uuenda tulpade/ridade arvu välja silti vastavalt paigutusele.
+     * Muudab ainult sildi esimest tekstisõlme, säilitades abinupu jm.
+     */
+    Editor.prototype.updateCountLabel = function() {
+        if (!this.numSelect || !this.numSelect.id) {
+            return;
+        }
+        var label = document.querySelector('label[for="' + this.numSelect.id + '"]');
+        if (!label) {
+            return;
+        }
+        var text = this.t(this.isRows() ? 'numRows' : 'numColumns');
+        var i;
+        for (i = 0; i < label.childNodes.length; i++) {
+            if (label.childNodes[i].nodeType === 3
+                    && label.childNodes[i].textContent.trim() !== '') {
+                label.childNodes[i].textContent = text;
+                return;
+            }
+        }
+        label.insertBefore(document.createTextNode(text), label.firstChild);
+    };
 
     /**
      * @return {String} tõlge
@@ -246,12 +288,12 @@ define([], function() {
         var column = this.columns[c];
 
         var head = el('div', {'class': 'cc-ed-colhead'}, [
-            el('strong', {text: this.t('column') + ' ' + (c + 1)})
+            el('strong', {text: this.t(this.isRows() ? 'row' : 'column') + ' ' + (c + 1)})
         ]);
 
         var title = el('input', {
             type: 'text', 'class': 'form-control cc-ed-title',
-            placeholder: this.t('columnTitle'), value: column.title
+            placeholder: this.t(this.isRows() ? 'rowTitle' : 'columnTitle'), value: column.title
         });
         title.addEventListener('input', function() {
             column.title = title.value;
@@ -412,7 +454,7 @@ define([], function() {
 
         container.innerHTML = '';
         container.appendChild(el('div', {'class': 'cc-ed-conn-label',
-            text: this.t('correctConnections')}));
+            text: this.t(this.isRows() ? 'correctConnectionsRow' : 'correctConnections')}));
 
         if (!prevCells.length) {
             container.appendChild(el('div', {'class': 'cc-ed-conn-empty',
