@@ -203,7 +203,7 @@ class qtype_columnconnector_h5p_importer {
      * @param stored_file $file üleslaaditud .h5p
      * @param int $cellimagesdraftid lahtripiltide mustandiala itemid
      * @param context $context vormi kontekst
-     * @return array [int $numcolumns, string $contentjson]
+     * @return array [int $numcolumns, string $contentjson, string $instructions]
      * @throws moodle_exception kui fail pole sobiv H5P.ColumnConnector
      */
     public static function import_stored_file($file, $cellimagesdraftid, $context) {
@@ -232,6 +232,16 @@ class qtype_columnconnector_h5p_importer {
         }
 
         list($numcolumns, $model, $imagerefs) = self::convert($content);
+
+        // „Juhis õppijale": 2.0 tipptasandil, 1.3 behaviour-grupis. See tuuakse
+        // Moodle'i küsimuse tekstiks (vt vormi definition_after_data).
+        $instructions = '';
+        if (isset($content['instructions']) && is_string($content['instructions'])) {
+            $instructions = $content['instructions'];
+        } else if (isset($content['behaviour']['instructions'])
+                && is_string($content['behaviour']['instructions'])) {
+            $instructions = $content['behaviour']['instructions'];
+        }
 
         // Salvesta failipildid lahtripiltide mustandialasse ja sea cell.image.
         if ($imagerefs) {
@@ -263,6 +273,6 @@ class qtype_columnconnector_h5p_importer {
             }
         }
 
-        return [$numcolumns, json_encode($model)];
+        return [$numcolumns, json_encode($model), $instructions];
     }
 }
