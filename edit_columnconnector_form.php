@@ -64,6 +64,14 @@ class qtype_columnconnector_edit_form extends question_edit_form {
         $mform->addElement('submit', 'loadh5p',
             get_string('h5pimportload', 'qtype_columnconnector'));
 
+        // Paigutus (tulbad/read) — sisusektsioonis, tulpade arvu ees.
+        $mform->addElement('select', 'layoutmode',
+            get_string('layoutmode', 'qtype_columnconnector'), [
+                'columns' => get_string('layoutcolumns', 'qtype_columnconnector'),
+                'rows' => get_string('layoutrows', 'qtype_columnconnector'),
+            ]);
+        $mform->setDefault('layoutmode', 'columns');
+
         $mform->addElement('select', 'numcolumns',
             get_string('numcolumns', 'qtype_columnconnector'),
             ['2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6', '7' => '7']);
@@ -91,9 +99,11 @@ class qtype_columnconnector_edit_form extends question_edit_form {
             'rootSelector' => '#cc-editor-root',
             'inputId' => 'id_contentjson',
             'numColumnsId' => 'id_numcolumns',
+            'layoutSelectId' => 'id_layoutmode',
             'cellImagesInputId' => 'id_cellimages',
             'strings' => [
                 'columnTitle' => get_string('columntitle', 'qtype_columnconnector'),
+                'rowTitle' => get_string('rowtitle', 'qtype_columnconnector'),
                 'cell' => get_string('cell', 'qtype_columnconnector'),
                 'cellText' => get_string('celltext', 'qtype_columnconnector'),
                 'imageUrl' => get_string('imageurl', 'qtype_columnconnector'),
@@ -112,11 +122,15 @@ class qtype_columnconnector_edit_form extends question_edit_form {
                 'moveUp' => get_string('moveup', 'qtype_columnconnector'),
                 'moveDown' => get_string('movedown', 'qtype_columnconnector'),
                 'correctConnections' => get_string('correctconnections', 'qtype_columnconnector'),
+                'correctConnectionsRow' => get_string('correctconnectionsrow', 'qtype_columnconnector'),
                 'noConnection' => get_string('noconnection', 'qtype_columnconnector'),
                 'connectionCount' => get_string('connectioncount', 'qtype_columnconnector'),
                 'noNeighbourCells' => get_string('noneighbourcells', 'qtype_columnconnector'),
                 'cellFallback' => get_string('cellfallback', 'qtype_columnconnector'),
                 'column' => get_string('column', 'qtype_columnconnector'),
+                'row' => get_string('row', 'qtype_columnconnector'),
+                'numColumns' => get_string('numcolumns', 'qtype_columnconnector'),
+                'numRows' => get_string('numrows', 'qtype_columnconnector'),
                 'uploadedImage' => get_string('uploadedimage', 'qtype_columnconnector'),
                 'noImage' => get_string('noimage', 'qtype_columnconnector'),
                 'refreshImages' => get_string('refreshimages', 'qtype_columnconnector'),
@@ -138,13 +152,6 @@ class qtype_columnconnector_edit_form extends question_edit_form {
         // --- Seaded ALLPOOL. ---
         $mform->addElement('header', 'columnconnectorheader',
             get_string('columnconnectorsettings', 'qtype_columnconnector'));
-
-        $mform->addElement('select', 'layoutmode',
-            get_string('layoutmode', 'qtype_columnconnector'), [
-                'columns' => get_string('layoutcolumns', 'qtype_columnconnector'),
-                'rows' => get_string('layoutrows', 'qtype_columnconnector'),
-            ]);
-        $mform->setDefault('layoutmode', 'columns');
 
         $mform->addElement('select', 'linestyle',
             get_string('linestyle', 'qtype_columnconnector'), [
@@ -240,8 +247,9 @@ class qtype_columnconnector_edit_form extends question_edit_form {
         $cellimagesdraft = file_get_submitted_draft_itemid('cellimages');
 
         try {
-            list($numcolumns, $contentjson) = qtype_columnconnector_h5p_importer::import_stored_file(
-                $file, $cellimagesdraft, $this->context);
+            list($numcolumns, $contentjson, $instructions) =
+                qtype_columnconnector_h5p_importer::import_stored_file(
+                    $file, $cellimagesdraft, $this->context);
         } catch (moodle_exception $e) {
             $mform->setElementError('h5pimport', $e->getMessage());
             return;
@@ -252,6 +260,11 @@ class qtype_columnconnector_edit_form extends question_edit_form {
         }
         if ($mform->elementExists('contentjson')) {
             $mform->getElement('contentjson')->setValue($contentjson);
+        }
+        // H5P „Juhis õppijale" -> Moodle'i küsimuse tekst.
+        if ($instructions !== '' && $mform->elementExists('questiontext')) {
+            $mform->getElement('questiontext')->setValue(
+                ['text' => $instructions, 'format' => FORMAT_HTML]);
         }
         // Lahtripildid on juba mustandialas; failihaldur ja toimetaja kuvavad need.
     }
