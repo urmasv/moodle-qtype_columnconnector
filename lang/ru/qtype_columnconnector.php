@@ -112,4 +112,6 @@ $string['rtealignleft'] = 'По левому краю';
 $string['rtealigncenter'] = 'По центру';
 $string['rtealignright'] = 'По правому краю';
 $string['rteclear'] = 'Очистить форматирование';
-$string['privacy:metadata'] = 'Плагин типа вопроса «Соединитель столбцов» не хранит персональные данные.';
+$string['correctansweris'] = 'Правильный ответ: {$a}';
+$string['regradeissuestructurechanged'] = 'Количество столбцов или ячеек изменилось, поэтому попытку нельзя переоценить с этой версией.';
+$string['privacy:preference:defaultmark'] = 'Балл по умолчанию, заданный для вопроса.';

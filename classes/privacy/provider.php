@@ -24,17 +24,38 @@
 
 namespace qtype_columnconnector\privacy;
 
+use core_privacy\local\metadata\collection;
+use core_privacy\local\request\writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * See küsimusetüüp ei salvesta isikuandmeid.
+ * Küsimusetüüp salvestab ainult kasutaja eelistuse (uue küsimuse vaikimisi hinne),
+ * mille paneb paika question_type::save_defaults_for_new_questions().
  */
-class provider implements \core_privacy\local\metadata\null_provider {
+class provider implements
+        \core_privacy\local\metadata\provider,
+        \core_privacy\local\request\user_preference_provider {
 
     /**
-     * @return string põhjendus, miks isikuandmeid ei salvestata
+     * @param collection $collection
+     * @return collection
      */
-    public static function get_reason(): string {
-        return 'privacy:metadata';
+    public static function get_metadata(collection $collection): collection {
+        $collection->add_user_preference('qtype_columnconnector_defaultmark', 'privacy:preference:defaultmark');
+        return $collection;
+    }
+
+    /**
+     * Ekspordi kasutaja eelistused.
+     *
+     * @param int $userid
+     */
+    public static function export_user_preferences(int $userid) {
+        $preference = get_user_preferences('qtype_columnconnector_defaultmark', null, $userid);
+        if (null !== $preference) {
+            $desc = get_string('privacy:preference:defaultmark', 'qtype_columnconnector');
+            writer::export_user_preference('qtype_columnconnector', 'defaultmark', $preference, $desc);
+        }
     }
 }

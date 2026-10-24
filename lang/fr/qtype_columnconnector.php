@@ -112,4 +112,6 @@ $string['rtealignleft'] = 'Aligner à gauche';
 $string['rtealigncenter'] = 'Centrer';
 $string['rtealignright'] = 'Aligner à droite';
 $string['rteclear'] = 'Effacer la mise en forme';
-$string['privacy:metadata'] = 'Le plugin de type de question Connecteur de colonnes ne stocke aucune donnée personnelle.';
+$string['correctansweris'] = 'La réponse correcte est : {$a}';
+$string['regradeissuestructurechanged'] = 'Le nombre de colonnes ou de cellules a changé, la tentative ne peut donc pas être réévaluée avec cette version.';
+$string['privacy:preference:defaultmark'] = 'La note par défaut définie pour une question.';

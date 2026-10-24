@@ -119,4 +119,6 @@ $string['rtealigncenter'] = 'Keskjoondus';
 $string['rtealignright'] = 'Paremjoondus';
 $string['rteclear'] = 'Eemalda vorming';
 
-$string['privacy:metadata'] = 'Küsimusetüüp „Tulpade ühendaja” ei salvesta isikuandmeid.';
+$string['correctansweris'] = 'Õige vastus on: {$a}';
+$string['regradeissuestructurechanged'] = 'Tulpade või lahtrite arv on muutunud, mistõttu ei saa katset selle versiooniga ümber hinnata.';
+$string['privacy:preference:defaultmark'] = 'Küsimusele määratud vaikimisi hinne.';

@@ -119,4 +119,6 @@ $string['rtealigncenter'] = 'Align center';
 $string['rtealignright'] = 'Align right';
 $string['rteclear'] = 'Clear formatting';
 
-$string['privacy:metadata'] = 'The Column connector question type plugin does not store any personal data.';
+$string['correctansweris'] = 'The correct answer is: {$a}';
+$string['regradeissuestructurechanged'] = 'The number of columns or cells has changed, so the attempt cannot be regraded with this version.';
+$string['privacy:preference:defaultmark'] = 'The default mark set for a given question.';

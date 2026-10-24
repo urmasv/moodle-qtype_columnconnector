@@ -112,4 +112,6 @@ $string['rtealignleft'] = 'Alinear a la izquierda';
 $string['rtealigncenter'] = 'Centrar';
 $string['rtealignright'] = 'Alinear a la derecha';
 $string['rteclear'] = 'Quitar formato';
-$string['privacy:metadata'] = 'El plugin de tipo de pregunta Conector de columnas no almacena datos personales.';
+$string['correctansweris'] = 'La respuesta correcta es: {$a}';
+$string['regradeissuestructurechanged'] = 'El número de columnas o celdas ha cambiado, por lo que el intento no se puede recalificar con esta versión.';
+$string['privacy:preference:defaultmark'] = 'La calificación predeterminada establecida para una pregunta.';

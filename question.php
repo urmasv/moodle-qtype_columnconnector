@@ -91,6 +91,34 @@ class qtype_columnconnector_question extends question_graded_automatically {
     }
 
     /**
+     * Ümberhindamine teise versiooniga on võimalik ainult siis, kui tulpade arv ja
+     * iga tulba lahtrite arv on sama: '_order<tulp>' sisaldab reaindekseid, mis peavad
+     * uues versioonis samale lahtrile osutama. Sel juhul sobib algoleku andmed
+     * muutmata kujul (põhiklassi update_attempt_state_data_for_new_version()).
+     *
+     * @param question_definition $otherversion
+     * @return string|null
+     */
+    public function validate_can_regrade_with_other_version(question_definition $otherversion): ?string {
+        $basemessage = parent::validate_can_regrade_with_other_version($otherversion);
+        if ($basemessage) {
+            return $basemessage;
+        }
+
+        if (count($this->columns) != count($otherversion->columns)) {
+            return get_string('regradeissuestructurechanged', 'qtype_columnconnector');
+        }
+        foreach ($this->columns as $colindex => $column) {
+            $othercells = $otherversion->columns[$colindex]['cells'] ?? null;
+            if (!is_array($othercells) || count($column['cells'] ?? []) != count($othercells)) {
+                return get_string('regradeissuestructurechanged', 'qtype_columnconnector');
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param int $colindex
      * @return array reaindeksid kuvamisjärjekorras
      */
@@ -129,6 +157,9 @@ class qtype_columnconnector_question extends question_graded_automatically {
      * @return string veateade, kui vastus pole hinnatav
      */
     public function get_validation_error(array $response) {
+        if ($this->is_gradable_response($response)) {
+            return '';
+        }
         return get_string('pleaseconnect', 'qtype_columnconnector');
     }
 
@@ -196,11 +227,10 @@ class qtype_columnconnector_question extends question_graded_automatically {
      */
     public function check_file_access($qa, $options, $component, $filearea, $args, $forcedownload) {
         if ($component == 'qtype_columnconnector' && in_array($filearea, ['instructions', 'cellimages'])) {
-            return true;
+            // Failid on seotud selle küsimuse id-ga.
+            return reset($args) == $this->id;
         }
-        if ($component == 'question' && in_array($filearea, ['questiontext', 'generalfeedback'])) {
-            return $this->check_combined_feedback_file_access($qa, $options, $filearea, $args);
-        }
+        // questiontext ja generalfeedback käsitleb põhiklass.
         return parent::check_file_access($qa, $options, $component, $filearea, $args, $forcedownload);
     }
 

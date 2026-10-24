@@ -112,4 +112,6 @@ $string['rtealignleft'] = 'Вирівняти ліворуч';
 $string['rtealigncenter'] = 'По центру';
 $string['rtealignright'] = 'Вирівняти праворуч';
 $string['rteclear'] = 'Очистити форматування';
-$string['privacy:metadata'] = 'Плагін типу запитання «З’єднувач стовпців» не зберігає персональних даних.';
+$string['correctansweris'] = 'Правильна відповідь: {$a}';
+$string['regradeissuestructurechanged'] = 'Кількість стовпців або комірок змінилася, тому спробу не можна переоцінити з цією версією.';
+$string['privacy:preference:defaultmark'] = 'Типова оцінка, встановлена для питання.';

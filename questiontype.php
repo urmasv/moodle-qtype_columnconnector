@@ -275,6 +275,14 @@ class qtype_columnconnector extends question_type {
         $output .= "    <instructionsformat>" . (int)$options->instructionsformat . "</instructionsformat>\n";
         $output .= "    <instructions>" . $format->writetext($options->instructions) . "</instructions>\n";
         $output .= "    <content>" . $format->writetext($options->content) . "</content>\n";
+
+        // Lahtrite pildid (base64), nagu core qtype_ddimageortext bgimage puhul.
+        $fs = get_file_storage();
+        $files = $fs->get_area_files($question->contextid, 'qtype_columnconnector', 'cellimages',
+            $question->id, 'filename', false);
+        if ($files) {
+            $output .= "    <cellimages>\n" . $format->write_files($files) . "    </cellimages>\n";
+        }
         return $output;
     }
 
@@ -306,6 +314,13 @@ class qtype_columnconnector extends question_type {
         $qo->instructionsformat = $format->getpath($data, ['#', 'instructionsformat', 0, '#'], FORMAT_HTML);
         $qo->instructions = $format->getpath($data, ['#', 'instructions', 0, '#', 'text', 0, '#'], '');
         $qo->content = $format->getpath($data, ['#', 'content', 0, '#', 'text', 0, '#'], '');
+
+        // Lahtrite pildid mustandialasse; save_question_options() salvestab need küsimuse alla.
+        $filexml = $format->getpath($data, ['#', 'cellimages', 0, '#', 'file'], []);
+        $draftitemid = $format->import_files_as_draft($filexml);
+        if ($draftitemid) {
+            $qo->cellimages = $draftitemid;
+        }
 
         return $qo;
     }

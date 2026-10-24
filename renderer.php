@@ -61,7 +61,8 @@ class qtype_columnconnector_renderer extends qtype_renderer {
             'type' => 'hidden',
             'name' => $inputname,
             'id' => $inputname,
-            'value' => s($response),
+            // Ilma s()-ta: html_writer escape'ib atribuudi väärtuse ise.
+            'value' => $response,
         ]);
 
         // Lava ja tulbad.
@@ -133,6 +134,13 @@ class qtype_columnconnector_renderer extends qtype_renderer {
         ]);
 
         $out .= html_writer::end_tag('div'); // cc-container.
+
+        if ($qa->get_state() == question_state::$invalid) {
+            $out .= html_writer::nonempty_tag('div',
+                $question->get_validation_error($qa->get_last_qt_data()),
+                ['class' => 'validationerror']);
+        }
+
         $out .= html_writer::end_tag('div'); // ablock.
 
         // Konfiguratsioon JavaScripti jaoks.
@@ -202,7 +210,8 @@ class qtype_columnconnector_renderer extends qtype_renderer {
         $text = (string)($cell['text'] ?? '');
         if (trim($text) !== '') {
             $inner .= html_writer::tag('span',
-                format_text($text, FORMAT_HTML, ['noclean' => true]),
+                format_text($text, FORMAT_HTML,
+                    $contextid ? ['context' => context::instance_by_id($contextid)] : []),
                 ['class' => 'cc-cell-text']);
         }
 
@@ -226,5 +235,24 @@ class qtype_columnconnector_renderer extends qtype_renderer {
      */
     public function specific_feedback(question_attempt $qa) {
         return '';
+    }
+
+    /**
+     * Õige vastus tekstina ülevaates. Kuvatakse ainult siis, kui küsimuses on
+     * lubatud puuduvate ühenduste näitamine (sama tingimus, mis $showkey puhul).
+     *
+     * @param question_attempt $qa
+     * @return string
+     */
+    public function correct_response(question_attempt $qa) {
+        $question = $qa->get_question();
+        if (empty($question->showmissing) || empty($question->answerkey)) {
+            return '';
+        }
+        $summary = $question->summarise_response($question->get_correct_response());
+        if ($summary === '') {
+            return '';
+        }
+        return get_string('correctansweris', 'qtype_columnconnector', s($summary));
     }
 }

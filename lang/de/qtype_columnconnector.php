@@ -112,4 +112,6 @@ $string['rtealignleft'] = 'Linksbündig';
 $string['rtealigncenter'] = 'Zentriert';
 $string['rtealignright'] = 'Rechtsbündig';
 $string['rteclear'] = 'Formatierung entfernen';
-$string['privacy:metadata'] = 'Der Fragetyp Spaltenverbinder speichert keine personenbezogenen Daten.';
+$string['correctansweris'] = 'Die richtige Antwort ist: {$a}';
+$string['regradeissuestructurechanged'] = 'Die Anzahl der Spalten oder Zellen hat sich geändert, daher kann der Versuch mit dieser Version nicht neu bewertet werden.';
+$string['privacy:preference:defaultmark'] = 'Die Standardbewertung für eine Frage.';
