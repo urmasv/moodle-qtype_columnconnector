@@ -49,9 +49,21 @@ class backup_qtype_columnconnector_plugin extends backup_qtype_plugin {
 
         $options->set_source_table('qtype_columnconnector', ['questionid' => backup::VAR_PARENTID]);
 
-        // Lahtrite pildid on seotud küsimuse id-ga.
-        $options->annotate_files('qtype_columnconnector', 'cellimages', 'questionid');
+        // Lahtrite pilte ei annoteerita siin: need asuvad küsimuse kontekstis, mitte
+        // varundusülesande kontekstis. Need varundab ja taastab core get_qtype_fileareas() kaudu.
 
         return $plugin;
+    }
+
+    /**
+     * Küsimuse definitsiooni failialad. Väärtus on mappingu nimi itemid taastamiseks:
+     * 'question_created' tähendab, et itemid on küsimuse id.
+     *
+     * @return array
+     */
+    public static function get_qtype_fileareas() {
+        return [
+            'cellimages' => 'question_created',
+        ];
     }
 }
