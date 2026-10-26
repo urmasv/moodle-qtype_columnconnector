@@ -56,13 +56,16 @@ class qtype_columnconnector_edit_form extends question_edit_form {
         $mform->setExpanded('columnconnectorcontent');
 
         // Impordi olemasolevast H5P.ColumnConnector failist (vormisisene, ilma AJAX-ita).
-        $mform->addElement('filepicker', 'h5pimport',
-            get_string('h5pimport', 'qtype_columnconnector'), null,
-            ['accepted_types' => ['.h5p'], 'maxbytes' => 0]);
-        $mform->addHelpButton('h5pimport', 'h5pimport', 'qtype_columnconnector');
-        $mform->registerNoSubmitButton('loadh5p');
-        $mform->addElement('submit', 'loadh5p',
-            get_string('h5pimportload', 'qtype_columnconnector'));
+        // Kuvatakse ainult siis, kui administraator on selle lubanud (vaikimisi väljas).
+        if (get_config('qtype_columnconnector', 'enableh5pimport')) {
+            $mform->addElement('filepicker', 'h5pimport',
+                get_string('h5pimport', 'qtype_columnconnector'), null,
+                ['accepted_types' => ['.h5p'], 'maxbytes' => 0]);
+            $mform->addHelpButton('h5pimport', 'h5pimport', 'qtype_columnconnector');
+            $mform->registerNoSubmitButton('loadh5p');
+            $mform->addElement('submit', 'loadh5p',
+                get_string('h5pimportload', 'qtype_columnconnector'));
+        }
 
         // Paigutus (tulbad/read) — sisusektsioonis, tulpade arvu ees.
         $mform->addElement('select', 'layoutmode',
@@ -225,6 +228,11 @@ class qtype_columnconnector_edit_form extends question_edit_form {
     public function definition_after_data() {
         parent::definition_after_data();
         $mform = $this->_form;
+
+        // Import toimib ainult siis, kui administraator on selle lubanud.
+        if (!get_config('qtype_columnconnector', 'enableh5pimport')) {
+            return;
+        }
 
         if (!optional_param('loadh5p', false, PARAM_RAW)) {
             return;
