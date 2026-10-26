@@ -66,6 +66,8 @@ $string['h5pimport_help'] = 'Виберіть наявний файл H5P.Column
 $string['h5pimportload'] = 'Завантажити з H5P';
 $string['h5pimporterror'] = 'Не вдалося прочитати файл H5P.';
 $string['h5pimportwrongtype'] = 'Це не вміст H5P.ColumnConnector.';
+$string['enableh5pimport'] = 'Увімкнути імпорт з H5P';
+$string['enableh5pimport_desc'] = 'Якщо увімкнено, у формі редагування запитання з’являється поле «Імпорт з H5P», яке імпортує вміст з наявного файлу H5P.ColumnConnector (.h5p) у запитання. Типово вимкнено. Приклади: <a href="https://urmasvessin.ee/testid/h5p/h5p-sisutuup-connect-with-lines-uhenda-joontega/" target="_blank" rel="noopener">urmasvessin.ee</a>. Вихідний код (тип вмісту H5P): <a href="https://github.com/urmasv/H5P.ColumnConnector" target="_blank" rel="noopener">GitHub</a>.';
 $string['column'] = 'Стовпець';
 $string['row'] = 'Рядок';
 $string['columntitle'] = 'Заголовок стовпця';

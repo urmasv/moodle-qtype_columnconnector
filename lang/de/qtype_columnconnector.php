@@ -66,6 +66,8 @@ $string['h5pimport_help'] = 'Wählen Sie eine vorhandene H5P.ColumnConnector-Dat
 $string['h5pimportload'] = 'Aus H5P laden';
 $string['h5pimporterror'] = 'Die H5P-Datei konnte nicht gelesen werden.';
 $string['h5pimportwrongtype'] = 'Dies ist kein H5P.ColumnConnector-Inhalt.';
+$string['enableh5pimport'] = 'H5P-Import aktivieren';
+$string['enableh5pimport_desc'] = 'Wenn aktiviert, zeigt das Frageformular ein Feld „Aus H5P importieren", mit dem Inhalte aus einer vorhandenen H5P.ColumnConnector-Datei (.h5p) in die Frage importiert werden. Standardmäßig deaktiviert. Beispiele: <a href="https://urmasvessin.ee/testid/h5p/h5p-sisutuup-connect-with-lines-uhenda-joontega/" target="_blank" rel="noopener">urmasvessin.ee</a>. Quellcode (H5P-Inhaltstyp): <a href="https://github.com/urmasv/H5P.ColumnConnector" target="_blank" rel="noopener">GitHub</a>.';
 $string['column'] = 'Spalte';
 $string['row'] = 'Zeile';
 $string['columntitle'] = 'Spaltentitel';

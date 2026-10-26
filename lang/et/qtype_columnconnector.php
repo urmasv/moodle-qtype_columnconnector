@@ -70,6 +70,8 @@ $string['h5pimport_help'] = 'Vali olemasolev H5P.ColumnConnector (.h5p) fail ja 
 $string['h5pimportload'] = 'Laadi H5P-st';
 $string['h5pimporterror'] = 'H5P-faili lugemine ebaõnnestus.';
 $string['h5pimportwrongtype'] = 'See ei ole H5P.ColumnConnector tüüpi sisu.';
+$string['enableh5pimport'] = 'Luba H5P-import';
+$string['enableh5pimport_desc'] = 'Kui lubatud, kuvatakse küsimuse koostamise vormis väli „Impordi H5P-st", millega saab olemasolevast H5P.ColumnConnector (.h5p) failist sisu küsimusse importida. Vaikimisi väljas. Näidised: <a href="https://urmasvessin.ee/testid/h5p/h5p-sisutuup-connect-with-lines-uhenda-joontega/" target="_blank" rel="noopener">urmasvessin.ee</a>. Lähtekood (H5P sisutüüp): <a href="https://github.com/urmasv/H5P.ColumnConnector" target="_blank" rel="noopener">GitHub</a>.';
 $string['column'] = 'Tulp';
 $string['row'] = 'Rida';
 $string['columntitle'] = 'Tulba pealkiri';
