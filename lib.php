@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Serveeri lahtrite pildid (filearea 'cellimages') pluginfile.php kaudu.
  * Ligipääsu kontrollib question_pluginfile -> qtype check_file_access.

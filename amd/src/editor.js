@@ -26,6 +26,121 @@
 
 define([], function() {
 
+    /** @var {Object} lubatud HTML-elemendid lahtri tekstis. */
+    var ALLOWED_TAGS = {
+        P: true, BR: true, DIV: true, SPAN: true, STRONG: true, B: true, EM: true, I: true,
+        U: true, UL: true, OL: true, LI: true, A: true, SUB: true, SUP: true, IMG: true
+    };
+
+    /** @var {Object} elemendid, mis eemaldatakse koos sisuga. */
+    var DROP_TAGS = {
+        SCRIPT: true, STYLE: true, IFRAME: true, OBJECT: true, EMBED: true, TEMPLATE: true,
+        NOSCRIPT: true, SVG: true, MATH: true, LINK: true, META: true, BASE: true, FORM: true,
+        INPUT: true, BUTTON: true, TEXTAREA: true, SELECT: true, FRAME: true, FRAMESET: true
+    };
+
+    /**
+     * Parsi HTML inertsesse dokumenti (skriptid ei käivitu, pilte ei laadita).
+     *
+     * @param {String} html
+     * @return {Document}
+     */
+    function parseInert(html) {
+        return new DOMParser().parseFromString('<!DOCTYPE html><body>' + (html || ''), 'text/html');
+    }
+
+    /**
+     * Kas URL on lubatud (http, https, mailto või suhteline ilma skeemita).
+     *
+     * @param {String} url
+     * @param {Boolean} imageonly kas lubada ainult http(s)
+     * @return {Boolean}
+     */
+    function safeUrl(url, imageonly) {
+        var value = String(url || '').trim();
+        if (/^https?:\/\//i.test(value)) {
+            return true;
+        }
+        if (imageonly) {
+            return false;
+        }
+        if (/^mailto:/i.test(value)) {
+            return true;
+        }
+        // Skeemita suhteline aadress (nt "/mod/page/view.php?id=1" või "#ankur").
+        var compact = value.split('').filter(function(ch) {
+            return ch.charCodeAt(0) > 32;
+        }).join('');
+        return value !== '' && !/^[a-z][a-z0-9+.-]*:/i.test(compact);
+    }
+
+    /**
+     * Puhasta üks sõlm ja selle alamsõlmed lubatud elementide ja atribuutideni.
+     *
+     * @param {Node} node
+     */
+    function sanitizeNode(node) {
+        Array.prototype.slice.call(node.childNodes).forEach(function(child) {
+            if (child.nodeType === 3) {
+                return;
+            }
+            if (child.nodeType !== 1) {
+                node.removeChild(child);
+                return;
+            }
+            var tag = child.tagName.toUpperCase();
+            if (DROP_TAGS[tag]) {
+                node.removeChild(child);
+                return;
+            }
+            sanitizeNode(child);
+            if (!ALLOWED_TAGS[tag]) {
+                // Tundmatu element: säilita sisu, eemalda element ise.
+                while (child.firstChild) {
+                    node.insertBefore(child.firstChild, child);
+                }
+                node.removeChild(child);
+                return;
+            }
+            Array.prototype.slice.call(child.attributes).forEach(function(attr) {
+                var name = attr.name.toLowerCase();
+                var keep = false;
+                if (name === 'style') {
+                    keep = /^\s*text-align\s*:\s*(left|center|right|justify)\s*;?\s*$/i.test(attr.value);
+                } else if (tag === 'A' && name === 'href') {
+                    keep = safeUrl(attr.value, false);
+                } else if (tag === 'A' && (name === 'target' || name === 'title')) {
+                    keep = true;
+                } else if (tag === 'IMG' && name === 'src') {
+                    keep = safeUrl(attr.value, true);
+                } else if (tag === 'IMG' && (name === 'alt' || name === 'width' || name === 'height')) {
+                    keep = true;
+                }
+                if (!keep) {
+                    child.removeAttribute(attr.name);
+                }
+            });
+            if (tag === 'A' && child.getAttribute('target')) {
+                child.setAttribute('rel', 'noopener noreferrer');
+            }
+            if (tag === 'IMG' && !child.getAttribute('src')) {
+                node.removeChild(child);
+            }
+        });
+    }
+
+    /**
+     * Puhasta lahtri HTML enne toimetajasse panemist.
+     *
+     * @param {String} html
+     * @return {Document} inertne dokument, mille body sisaldab puhastatud sisu
+     */
+    function sanitizeHtml(html) {
+        var doc = parseInert(html);
+        sanitizeNode(doc.body);
+        return doc;
+    }
+
     /**
      * Eemalda HTML-sildid tekstist.
      *
@@ -33,9 +148,8 @@ define([], function() {
      * @return {String}
      */
     function stripTags(html) {
-        var tmp = document.createElement('div');
-        tmp.innerHTML = html || '';
-        return (tmp.textContent || tmp.innerText || '').trim();
+        var doc = parseInert(html);
+        return (doc.body.textContent || '').trim();
     }
 
     /**
@@ -155,6 +269,10 @@ define([], function() {
     };
 
     /**
+     * Tõlge keelestringi võtme järgi.
+     *
+     * @param {String} key
+     * @param {Object} replacements asendused kujul {nimi: väärtus}
      * @return {String} tõlge
      */
     Editor.prototype.t = function(key, replacements) {
@@ -190,11 +308,13 @@ define([], function() {
                 title: col.title || '',
                 cells: (col.cells || []).map(function(cell) {
                     return {
+                        id: cell.id || '',
                         text: cell.text || '',
                         image: cell.image || '',
                         imageurl: cell.imageurl || '',
                         imageposition: cell.imageposition === 'left' ? 'left' : 'above',
-                        imageleftsize: (cell.imageleftsize === 'medium' || cell.imageleftsize === 'large') ? cell.imageleftsize : 'small',
+                        imageleftsize: (cell.imageleftsize === 'medium' || cell.imageleftsize === 'large')
+                            ? cell.imageleftsize : 'small',
                         imagealign: (cell.imagealign === 'left') ? 'left' : 'center',
                         alt: cell.alt || '',
                         prev: []
@@ -244,7 +364,7 @@ define([], function() {
         }
         this.columns.forEach(function(col) {
             if (col.cells.length === 0) {
-                col.cells.push({text: '', image: '', imageurl: '', imageposition: 'above',
+                col.cells.push({id: '', text: '', image: '', imageurl: '', imageposition: 'above',
                     imageleftsize: 'small', imagealign: 'center', alt: '', prev: []});
             }
         });
@@ -254,7 +374,8 @@ define([], function() {
      * @return {Element} tühi lahter
      */
     Editor.prototype.blankCell = function() {
-        return {text: '', image: '', imageurl: '', imageposition: 'above',
+        // Uue lahtri püsiva id annab server salvestamisel.
+        return {id: '', text: '', image: '', imageurl: '', imageposition: 'above',
             imageleftsize: 'small', imagealign: 'center', alt: '', prev: []};
     };
 
@@ -533,7 +654,10 @@ define([], function() {
             role: 'textbox',
             'aria-multiline': 'true'
         });
-        area.innerHTML = html || '';
+        var clean = sanitizeHtml(html);
+        Array.prototype.slice.call(clean.body.childNodes).forEach(function(child) {
+            area.appendChild(document.importNode(child, true));
+        });
 
         var commit = function() {
             onchange(area.innerHTML);
@@ -590,17 +714,63 @@ define([], function() {
                 exec('justifyRight');
             }),
             mkbtn('🔗', s.rteLink || 'Insert link', function() {
-                var href = window.prompt(s.rteLinkPrompt || 'Link URL:', 'https://');
-                if (href) {
-                    exec('createLink', href);
-                }
+                openLinkRow();
             }),
             mkbtn('⌫', s.rteClear || 'Clear formatting', function() {
                 exec('removeFormat');
             })
         ]);
 
-        var wrapper = el('div', {'class': 'cc-ed-rte'}, [toolbar, area]);
+        // Lingi sisestamise rida (brauseri prompt()-akna asemel).
+        var savedRange = null;
+        var linkInput = el('input', {
+            type: 'url', 'class': 'form-control form-control-sm cc-ed-rte-linkinput',
+            placeholder: 'https://', 'aria-label': s.rteLinkPrompt || 'Link URL'
+        });
+        var linkApply = el('button', {type: 'button', 'class': 'btn btn-primary btn-sm'}, s.ok || 'OK');
+        var linkCancel = el('button', {type: 'button', 'class': 'btn btn-secondary btn-sm'}, s.cancel || 'Cancel');
+        var linkRow = el('div', {'class': 'cc-ed-rte-linkrow'}, [
+            el('label', {'class': 'cc-ed-flabel', text: s.rteLinkPrompt || 'Link URL:'}), linkInput, linkApply, linkCancel
+        ]);
+        linkRow.hidden = true;
+
+        var openLinkRow = function() {
+            var sel = window.getSelection();
+            savedRange = (sel && sel.rangeCount && area.contains(sel.anchorNode)) ? sel.getRangeAt(0).cloneRange() : null;
+            linkInput.value = 'https://';
+            linkRow.hidden = false;
+            linkInput.focus();
+        };
+        var closeLinkRow = function() {
+            linkRow.hidden = true;
+            area.focus();
+        };
+        var applyLink = function() {
+            var href = linkInput.value.trim();
+            linkRow.hidden = true;
+            area.focus();
+            if (savedRange) {
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(savedRange);
+            }
+            if (href && safeUrl(href, false)) {
+                exec('createLink', href);
+            }
+        };
+        linkApply.addEventListener('click', applyLink);
+        linkCancel.addEventListener('click', closeLinkRow);
+        linkInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyLink();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeLinkRow();
+            }
+        });
+
+        var wrapper = el('div', {'class': 'cc-ed-rte'}, [toolbar, linkRow, area]);
         return {wrapper: wrapper, area: area};
     };
 
@@ -697,6 +867,7 @@ define([], function() {
                 return {name: f.filename || f.fullname, url: f.url || f.thumbnail || ''};
             });
             self.populateImageSelects();
+            return self.imageFiles;
         }).catch(function() {
             // Vaikselt: kui nimekirja ei saa, jäävad väljad URL-i ja käsitsi valiku peale.
         });
@@ -836,12 +1007,14 @@ define([], function() {
             var col = this.columns[c] || {title: '', cells: []};
             var cells = col.cells.map(function(cell) {
                 return {
+                    id: cell.id || '',
                     text: cell.text || '',
                     image: cell.image || '',
                     imageurl: cell.imageurl || '',
                     imageposition: cell.imageposition === 'left' ? 'left' : 'above',
-                    imageleftsize: (cell.imageleftsize === 'medium' || cell.imageleftsize === 'large') ? cell.imageleftsize : 'small',
-                        imagealign: (cell.imagealign === 'left') ? 'left' : 'center',
+                    imageleftsize: (cell.imageleftsize === 'medium' || cell.imageleftsize === 'large')
+                        ? cell.imageleftsize : 'small',
+                    imagealign: (cell.imagealign === 'left') ? 'left' : 'center',
                     alt: cell.alt || ''
                 };
             });
@@ -849,10 +1022,12 @@ define([], function() {
         }
 
         var seen = {};
-        for (var k = 1; k < n; k++) {
-            this.columns[k].cells.forEach(function(cell, r) {
+        var self = this;
+        var collect = function(k) {
+            var prevcount = self.columns[k - 1] ? self.columns[k - 1].cells.length : 0;
+            self.columns[k].cells.forEach(function(cell, r) {
                 (cell.prev || []).forEach(function(p) {
-                    if (p < 0 || p >= (this.columns[k - 1] ? this.columns[k - 1].cells.length : 0)) {
+                    if (p < 0 || p >= prevcount) {
                         return;
                     }
                     var key = (k - 1) + ':' + p + '-' + k + ':' + r;
@@ -864,8 +1039,11 @@ define([], function() {
                         from: {col: k - 1, row: p},
                         to: {col: k, row: r}
                     });
-                }.bind(this));
-            }.bind(this));
+                });
+            });
+        };
+        for (var k = 1; k < n; k++) {
+            collect(k);
         }
 
         this.input.value = JSON.stringify({columns: columns, answerkey: answerkey});
@@ -875,18 +1053,25 @@ define([], function() {
         /**
          * Käivita toimetaja.
          *
-         * @param {Object} config
+         * @param {String} rootSelector toimetaja juurelemendi valija; seaded on selle data-config atribuudis
          */
-        init: function(config) {
+        init: function(rootSelector) {
             var attempts = 0;
             var start = function() {
-                var root = document.querySelector(config.rootSelector);
+                var root = document.querySelector(rootSelector);
                 if (!root) {
                     if (attempts++ < 50) {
                         window.setTimeout(start, 100);
                     }
                     return;
                 }
+                var config = {};
+                try {
+                    config = JSON.parse(root.getAttribute('data-config') || '{}');
+                } catch (e) {
+                    config = {};
+                }
+                config.rootSelector = rootSelector;
                 new Editor(config);
             };
             if (document.readyState !== 'loading') {

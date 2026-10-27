@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Uuenda qtype_columnconnector andmebaasi skeem.
  *
@@ -31,11 +29,10 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_qtype_columnconnector_upgrade($oldversion) {
-    global $DB;
+    global $CFG, $DB;
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2026061500) {
-
         $table = new xmldb_table('qtype_columnconnector');
 
         // Kirjelda kõik oodatavad veerud (nimi => [tüüp, pikkus, notnull, vaikeväärtus, eelnev]).
@@ -47,7 +44,7 @@ function xmldb_qtype_columnconnector_upgrade($oldversion) {
             ['linestyle', XMLDB_TYPE_CHAR, '16', XMLDB_NOTNULL, 'curved', 'layoutmode', false],
             ['showclear', XMLDB_TYPE_INTEGER, '1', XMLDB_NOTNULL, '1', 'linestyle', false],
             ['showmissing', XMLDB_TYPE_INTEGER, '1', XMLDB_NOTNULL, '0', 'showclear', false],
-            ['correctpoints', XMLDB_TYPE_NUMBER, '10, 5', XMLDB_NOTNULL, '1', 'showclear', false],
+            ['correctpoints', XMLDB_TYPE_NUMBER, '10, 5', XMLDB_NOTNULL, '1', 'showmissing', false],
             ['incorrectpoints', XMLDB_TYPE_NUMBER, '10, 5', XMLDB_NOTNULL, '-1', 'correctpoints', false],
             ['missingpoints', XMLDB_TYPE_NUMBER, '10, 5', XMLDB_NOTNULL, '0', 'incorrectpoints', false],
             ['instructions', XMLDB_TYPE_TEXT, null, null, null, 'missingpoints', false],
@@ -58,11 +55,16 @@ function xmldb_qtype_columnconnector_upgrade($oldversion) {
         if (!$dbman->table_exists($table)) {
             // Tabelit pole (nt varasem paigaldus jättis selle loomata) — loo täielikult.
             foreach ($fielddefs as $d) {
-                list($name, $type, $length, $notnull, $default, $previous, $sequence) = $d;
-                $table->add_field($name, $type, $length, null,
+                [$name, $type, $length, $notnull, $default, $previous, $sequence] = $d;
+                $table->add_field(
+                    $name,
+                    $type,
+                    $length,
+                    null,
                     $notnull ? XMLDB_NOTNULL : null,
                     $sequence ? XMLDB_SEQUENCE : null,
-                    $default);
+                    $default
+                );
             }
             $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
             $table->add_key('questionid', XMLDB_KEY_FOREIGN_UNIQUE, ['questionid'], 'question', ['id']);
@@ -70,12 +72,20 @@ function xmldb_qtype_columnconnector_upgrade($oldversion) {
         } else {
             // Tabel on olemas — taga, et iga veerg eksisteerib (parandab skeemitriivi).
             foreach ($fielddefs as $d) {
-                list($name, $type, $length, $notnull, $default, $previous, $sequence) = $d;
+                [$name, $type, $length, $notnull, $default, $previous, $sequence] = $d;
                 if ($name === 'id') {
                     continue;
                 }
-                $field = new xmldb_field($name, $type, $length, null,
-                    $notnull ? XMLDB_NOTNULL : null, null, $default, $previous);
+                $field = new xmldb_field(
+                    $name,
+                    $type,
+                    $length,
+                    null,
+                    $notnull ? XMLDB_NOTNULL : null,
+                    null,
+                    $default,
+                    $previous
+                );
                 if (!$dbman->field_exists($table, $field)) {
                     $dbman->add_field($table, $field);
                 }
@@ -88,12 +98,71 @@ function xmldb_qtype_columnconnector_upgrade($oldversion) {
     if ($oldversion < 2026061700) {
         // Lisa veerg 'showmissing' (puuduvate ühenduste kuvamine), kui puudub.
         $table = new xmldb_table('qtype_columnconnector');
-        $field = new xmldb_field('showmissing', XMLDB_TYPE_INTEGER, '1', null,
-            XMLDB_NOTNULL, null, '0', 'showclear');
+        $field = new xmldb_field(
+            'showmissing',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'showclear'
+        );
         if ($dbman->table_exists($table) && !$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
         upgrade_plugin_savepoint(true, 2026061700, 'qtype', 'columnconnector');
+    }
+
+    if ($oldversion < 2026102700) {
+        // Eraldi juhise väli eemaldatakse: juhis kuulub küsimuse teksti.
+        // Kui küsimuse tekst on tühi ja juhis mitte, tõstetakse juhis küsimuse tekstiks.
+        $table = new xmldb_table('qtype_columnconnector');
+        $instructions = new xmldb_field('instructions');
+        if ($dbman->table_exists($table) && $dbman->field_exists($table, $instructions)) {
+            $hasformat = $dbman->field_exists($table, new xmldb_field('instructionsformat'));
+            $formatsql = $hasformat ? 'cc.instructionsformat' : FORMAT_HTML;
+            $rs = $DB->get_recordset_sql(
+                "SELECT cc.questionid, cc.instructions, {$formatsql} AS instructionsformat, q.questiontext
+                   FROM {qtype_columnconnector} cc
+                   JOIN {question} q ON q.id = cc.questionid
+                  WHERE cc.instructions IS NOT NULL"
+            );
+            foreach ($rs as $record) {
+                if (html_is_blank($record->instructions) || !html_is_blank($record->questiontext)) {
+                    continue;
+                }
+                $DB->update_record('question', (object)[
+                    'id' => $record->questionid,
+                    'questiontext' => $record->instructions,
+                    'questiontextformat' => (int)$record->instructionsformat,
+                ]);
+            }
+            $rs->close();
+            $dbman->drop_field($table, $instructions);
+        }
+
+        $instructionsformat = new xmldb_field('instructionsformat');
+        if ($dbman->table_exists($table) && $dbman->field_exists($table, $instructionsformat)) {
+            $dbman->drop_field($table, $instructionsformat);
+        }
+
+        upgrade_plugin_savepoint(true, 2026102700, 'qtype', 'columnconnector');
+    }
+
+    if ($oldversion < 2026102701) {
+        // Anna olemasolevate küsimuste lahtritele püsivad id-d (ümberhindamise kontrolli jaoks).
+        require_once($CFG->dirroot . '/question/type/columnconnector/questiontype.php');
+        $rs = $DB->get_recordset('qtype_columnconnector', null, 'id', 'id, content');
+        foreach ($rs as $record) {
+            $content = qtype_columnconnector::add_missing_cell_ids($record->content);
+            if ($content !== $record->content) {
+                $DB->set_field('qtype_columnconnector', 'content', $content, ['id' => $record->id]);
+            }
+        }
+        $rs->close();
+
+        upgrade_plugin_savepoint(true, 2026102701, 'qtype', 'columnconnector');
     }
 
     return true;

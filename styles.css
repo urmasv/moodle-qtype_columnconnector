@@ -1,16 +1,5 @@
 /* columnconnector küsimusetüübi stiilid. Kohandatud H5P.ColumnConnector põhjal. */
 
-.que.columnconnector .cc-instructions {
-    margin: 0 0 1em;
-    font-size: 1.125em;
-    font-weight: 600;
-    line-height: 1.2;
-}
-
-.que.columnconnector .cc-instructions > p {
-    margin: 0;
-}
-
 .que.columnconnector .cc-container {
     box-sizing: border-box;
     max-width: 100%;
@@ -46,7 +35,6 @@
     stroke: #1f6feb;
     stroke-width: 4;
     stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
 }
 
 .que.columnconnector .cc-line-correct {
@@ -152,6 +140,7 @@
 }
 
 .que.columnconnector .cc-cell {
+    position: relative;
     display: block;
     width: 100%;
     min-height: 4rem;
@@ -168,10 +157,48 @@
 }
 
 .que.columnconnector .cc-container:not(.cc-readonly) .cc-cell:hover,
-.que.columnconnector .cc-container:not(.cc-readonly) .cc-cell:focus {
+.que.columnconnector .cc-container:not(.cc-readonly) .cc-cell:focus-within {
     border-color: #4b89dc;
     box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.16);
     outline: none;
+}
+
+/* Lahtri valikunupp katab kogu lahtri; sisu jääb nupust väljapoole (lingid on eraldi juhtelemendid). */
+.que.columnconnector .cc-cell-select {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    cursor: pointer;
+}
+
+.que.columnconnector .cc-cell-select:focus-visible {
+    outline: 3px solid #1f6feb;
+    outline-offset: 2px;
+}
+
+.que.columnconnector .cc-readonly .cc-cell-select {
+    cursor: default;
+}
+
+/* Sisu on nupu kohal, kuid laseb klõpsud nupuni; lingid jäävad klikitavaks. */
+.que.columnconnector .cc-cell .cc-cell-content {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.que.columnconnector .cc-cell .cc-cell-content a {
+    pointer-events: auto;
 }
 
 .que.columnconnector .cc-readonly .cc-cell {
@@ -289,7 +316,8 @@
     flex-wrap: wrap;
 }
 
-.que.columnconnector .cc-sr-status {
+/* Ainult ekraanilugejatele mõeldud tekst. */
+.que.columnconnector .cc-sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -359,7 +387,6 @@
     stroke-linecap: round;
     stroke-dasharray: 8 7;
     opacity: 0.8;
-    vector-effect: non-scaling-stroke;
     pointer-events: none;
 }
 
@@ -368,14 +395,14 @@
     width: 100%;
 }
 
-.cc-editor-grid {
+.cc-editor-root .cc-editor-grid {
     display: flex;
     gap: 1rem;
     align-items: flex-start;
     flex-wrap: wrap;
 }
 
-.cc-ed-column {
+.cc-editor-root .cc-ed-column {
     flex: 1 1 220px;
     min-width: 220px;
     border: 1px solid #d9d9d9;
@@ -384,98 +411,98 @@
     background: #fafbfc;
 }
 
-.cc-ed-colhead {
+.cc-editor-root .cc-ed-colhead {
     margin-bottom: 0.5rem;
 }
 
-.cc-ed-title {
+.cc-editor-root .cc-ed-title {
     margin-bottom: 0.75rem;
 }
 
-.cc-ed-cells {
+.cc-editor-root .cc-ed-cells {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.cc-ed-cell {
+.cc-editor-root .cc-ed-cell {
     border: 1px solid #cfd4da;
     border-radius: 0.4rem;
     padding: 0.5rem;
     background: #fff;
 }
 
-.cc-ed-cellhead {
+.cc-editor-root .cc-ed-cellhead {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 0.4rem;
 }
 
-.cc-ed-cellnum {
+.cc-editor-root .cc-ed-cellnum {
     font-weight: 700;
     color: #555;
 }
 
-.cc-ed-tools {
+.cc-editor-root .cc-ed-tools {
     display: flex;
     gap: 0.15rem;
 }
 
-.cc-ed-tool {
+.cc-editor-root .cc-ed-tool {
     padding: 0 0.35rem;
     line-height: 1.2;
 }
 
-.cc-ed-fields {
+.cc-editor-root .cc-ed-fields {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
 }
 
-.cc-ed-flabel {
+.cc-editor-root .cc-ed-flabel {
     font-size: 0.8rem;
     font-weight: 600;
     margin: 0.2rem 0 0;
     color: #444;
 }
 
-.cc-ed-row {
+.cc-editor-root .cc-ed-row {
     display: flex;
     gap: 0.5rem;
     align-items: flex-end;
 }
 
-.cc-ed-half {
+.cc-editor-root .cc-ed-half {
     flex: 1 1 50%;
 }
 
-.cc-ed-conn {
+.cc-editor-root .cc-ed-conn {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px dashed #d0d7de;
 }
 
-.cc-ed-conn-label {
+.cc-editor-root .cc-ed-conn-label {
     font-size: 0.8rem;
     font-weight: 700;
     margin-bottom: 0.25rem;
     color: #1356a3;
 }
 
-.cc-ed-conn-empty {
+.cc-editor-root .cc-ed-conn-empty {
     font-size: 0.8rem;
     color: #777;
     font-style: italic;
 }
 
-.cc-ed-conn-list {
+.cc-editor-root .cc-ed-conn-list {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
 
-.cc-ed-conn-item {
+.cc-editor-root .cc-ed-conn-item {
     display: flex;
     align-items: flex-start;
     gap: 0.35rem;
@@ -484,30 +511,48 @@
     font-weight: 400;
 }
 
-.cc-ed-conn-item input {
+.cc-editor-root .cc-ed-conn-item input {
     margin-top: 0.2rem;
 }
 
 /* Toimetaja: lahtri pildivalik. */
-.cc-ed-imgrow {
+.cc-editor-root .cc-ed-imgrow {
     display: flex;
     align-items: center;
     gap: 6px;
     flex-wrap: wrap;
 }
-.cc-ed-imgrow .cc-ed-imgsel {
+.cc-editor-root .cc-ed-imgrow .cc-ed-imgsel {
     flex: 1 1 auto;
     min-width: 120px;
 }
-.cc-ed-imgrefresh {
+.cc-editor-root .cc-ed-imgrefresh {
     flex: 0 0 auto;
     line-height: 1;
 }
-.cc-ed-imgpreview {
+.cc-editor-root .cc-ed-imgpreview {
     flex: 0 0 auto;
     max-width: 48px;
     max-height: 48px;
     border: 1px solid #d0d7de;
     border-radius: 4px;
     object-fit: cover;
+}
+
+/* Toimetaja: lingi sisestamise rida. */
+.cc-editor-root .cc-ed-rte-linkrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.cc-editor-root .cc-ed-rte-linkrow[hidden] {
+    display: none;
+}
+
+.cc-editor-root .cc-ed-rte-linkinput {
+    flex: 1 1 160px;
+    min-width: 120px;
 }

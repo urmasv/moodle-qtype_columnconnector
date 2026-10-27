@@ -26,16 +26,6 @@ define([], function() {
     var NS = 'http://www.w3.org/2000/svg';
 
     /**
-     * Positsiooni võti.
-     *
-     * @param {Object} pos
-     * @return {String}
-     */
-    function posKey(pos) {
-        return pos.col + ':' + pos.row;
-    }
-
-    /**
      * Suunast sõltumatu ühenduse võti.
      *
      * @param {Object} conn
@@ -82,18 +72,17 @@ define([], function() {
         this.status = this.container.querySelector('.cc-sr-status');
         this.layoutMode = config.layoutMode;
         this.lineStyle = config.lineStyle;
-        this.readonly = config.readonly || config.reveal;
+        this.readonly = !!config.readonly;
         this.active = null;
 
+        // Serveri arvutatud olek (õige/vale) iga õppija ühenduse kohta, kui seda tohib näidata.
+        this.statusMap = {};
         this.connections = [];
         this.seen = {};
         (config.connections || []).forEach(function(conn) {
-            this.addConnection(conn.from, conn.to, true);
-        }.bind(this));
-
-        this.correctMap = {};
-        (config.answerKey || []).forEach(function(conn) {
-            this.correctMap[connKey(makeConnection(conn.from, conn.to))] = true;
+            if (this.addConnection(conn.from, conn.to, true) && conn.status) {
+                this.statusMap[connKey(makeConnection(conn.from, conn.to))] = conn.status;
+            }
         }.bind(this));
 
         this.bind();
@@ -118,9 +107,6 @@ define([], function() {
         var conn = makeConnection(from, to);
         var key = connKey(conn);
         if (this.seen[key]) {
-            if (!silent) {
-                this.announce(this.config.strings.duplicate);
-            }
             return false;
         }
         this.seen[key] = true;
@@ -128,6 +114,7 @@ define([], function() {
         if (!silent) {
             this.sync();
             this.redraw();
+            this.announce(this.format(this.config.strings.added, this.describe(conn)));
         }
         return true;
     };
@@ -138,12 +125,56 @@ define([], function() {
      * @param {String} key
      */
     Player.prototype.removeConnection = function(key) {
+        var removed = null;
         this.connections = this.connections.filter(function(conn) {
-            return connKey(conn) !== key;
+            if (connKey(conn) === key) {
+                removed = conn;
+                return false;
+            }
+            return true;
         });
         delete this.seen[key];
+        delete this.statusMap[key];
         this.sync();
         this.redraw();
+        if (removed) {
+            this.announce(this.format(this.config.strings.removed, this.describe(removed)));
+        }
+    };
+
+    /**
+     * Ühenduse kirjeldus teadete jaoks.
+     *
+     * @param {Object} conn
+     * @return {String}
+     */
+    Player.prototype.describe = function(conn) {
+        return this.cellLabel(conn.from) + ' \u2013 ' + this.cellLabel(conn.to);
+    };
+
+    /**
+     * Lahtri nimi teadete jaoks.
+     *
+     * @param {Object} pos
+     * @return {String}
+     */
+    Player.prototype.cellLabel = function(pos) {
+        var cell = this.findCell(pos);
+        if (!cell) {
+            return '';
+        }
+        return cell.getAttribute('data-label') || cell.textContent.trim();
+    };
+
+    /**
+     * Asenda keelestringis {$a}.
+     *
+     * @param {String} template
+     * @param {String} value
+     * @return {String}
+     */
+    Player.prototype.format = function(template, value) {
+        return String(template || '').split('{$a}').join(value);
     };
 
     /**
@@ -153,9 +184,10 @@ define([], function() {
         var self = this;
 
         if (!this.readonly) {
-            this.container.querySelectorAll('.cc-cell').forEach(function(cell) {
-                cell.addEventListener('click', function() {
-                    self.onCellClick(cell);
+            // Lahtri valimine käib eraldi nupuga; lahtri sisus olevad lingid toimivad iseseisvalt.
+            this.container.querySelectorAll('.cc-cell-select').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    self.onCellClick(button.closest('.cc-cell'));
                 });
             });
 
@@ -164,12 +196,23 @@ define([], function() {
                 clear.addEventListener('click', function() {
                     self.connections = [];
                     self.seen = {};
+                    self.statusMap = {};
                     self.active = null;
                     self.clearSelection();
                     self.sync();
                     self.redraw();
+                    self.announce(self.config.strings.cleared);
                 });
             }
+
+            // Escape tühistab lahtri valiku.
+            this.container.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && self.active) {
+                    self.active = null;
+                    self.clearSelection();
+                    self.redraw();
+                }
+            });
         }
 
         window.addEventListener('resize', function() {
@@ -237,9 +280,16 @@ define([], function() {
             return;
         }
 
-        this.addConnection(this.active, pos);
+        // Juba ühendatud paari uuesti valimine eemaldab ühenduse (klaviatuuriga kasutatav).
+        var key = connKey(makeConnection(this.active, pos));
+        var from = this.active;
         this.active = null;
         this.clearSelection();
+        if (this.seen[key]) {
+            this.removeConnection(key);
+        } else {
+            this.addConnection(from, pos);
+        }
         this.redraw();
     };
 
@@ -249,6 +299,7 @@ define([], function() {
      * @param {Object} pos
      */
     Player.prototype.select = function(pos) {
+        var self = this;
         this.active = pos;
         this.clearSelection();
         var cells = this.container.querySelectorAll('.cc-cell');
@@ -257,12 +308,12 @@ define([], function() {
             var r = parseInt(cell.getAttribute('data-row'), 10);
             if (c === pos.col && r === pos.row) {
                 cell.classList.add('cc-cell-selected');
-                cell.setAttribute('aria-pressed', 'true');
+                self.setPressed(cell, true);
             } else if (Math.abs(c - pos.col) === 1) {
                 cell.classList.add('cc-cell-valid-target');
             }
         });
-        this.announce(this.config.strings.selected);
+        this.announce(this.format(this.config.strings.selected, this.cellLabel(pos)));
     };
 
     /**
@@ -270,10 +321,24 @@ define([], function() {
      */
     Player.prototype.clearSelection = function() {
         this.previewPoint = null;
+        var self = this;
         this.container.querySelectorAll('.cc-cell').forEach(function(cell) {
             cell.classList.remove('cc-cell-selected', 'cc-cell-valid-target');
-            cell.setAttribute('aria-pressed', 'false');
+            self.setPressed(cell, false);
         });
+    };
+
+    /**
+     * Sea lahtri valikunupu olek.
+     *
+     * @param {Element} cell
+     * @param {Boolean} pressed
+     */
+    Player.prototype.setPressed = function(cell, pressed) {
+        var button = cell.querySelector('.cc-cell-select');
+        if (button) {
+            button.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+        }
     };
 
     /**
@@ -297,30 +362,26 @@ define([], function() {
         }
 
         var self = this;
-        var reveal = this.config.reveal;
 
         this.connections.forEach(function(conn) {
             var cls = 'cc-line';
-            var status = null;
-            if (reveal) {
-                status = self.correctMap[connKey(conn)] ? 'correct' : 'incorrect';
+            var status = self.statusMap[connKey(conn)] || null;
+            if (status) {
                 cls += ' cc-line-' + status;
             }
-            self.drawPath(conn, cls, !reveal);
+            self.drawPath(conn, cls, true);
             if (status) {
                 self.drawFeedbackIcon(conn, status);
             }
         });
 
-        // Paljasta puuduvad õiged ühendused.
-        if (this.config.showKey) {
-            (this.config.answerKey || []).forEach(function(item) {
-                var conn = makeConnection(item.from, item.to);
-                if (!self.seen[connKey(conn)]) {
-                    self.drawPath(conn, 'cc-line cc-line-missing', false);
-                }
-            });
-        }
+        // Puuduvad õiged ühendused (server saadab need ainult siis, kui õiget vastust tohib näidata).
+        (this.config.missing || []).forEach(function(item) {
+            var conn = makeConnection(item.from, item.to);
+            if (!self.seen[connKey(conn)]) {
+                self.drawPath(conn, 'cc-line cc-line-missing', false);
+            }
+        });
 
         // Eelvaatejoon valitud lahtrist kursorini.
         if (!this.readonly && this.active && this.previewPoint) {
@@ -532,11 +593,22 @@ define([], function() {
         /**
          * Käivita mängija.
          *
-         * @param {Object} config
+         * @param {String} containerId konteineri id; seaded on selle data-config atribuudis
          */
-        init: function(config) {
+        init: function(containerId) {
             // Oota, et paigutus oleks valmis, enne joonte joonistamist.
             var start = function() {
+                var container = document.getElementById(containerId);
+                if (!container) {
+                    return;
+                }
+                var config;
+                try {
+                    config = JSON.parse(container.getAttribute('data-config') || '{}');
+                } catch (e) {
+                    return;
+                }
+                config.containerId = containerId;
                 new Player(config);
             };
             if (document.readyState === 'complete') {

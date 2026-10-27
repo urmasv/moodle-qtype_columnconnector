@@ -22,14 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Varundab columnconnector küsimuse tüübispetsiifilised andmed.
  */
 class backup_qtype_columnconnector_plugin extends backup_qtype_plugin {
-
     /**
+     * Kirjelda varundatav struktuur.
+     *
      * @return backup_plugin_element
      */
     protected function define_question_plugin_structure() {
@@ -41,16 +40,15 @@ class backup_qtype_columnconnector_plugin extends backup_qtype_plugin {
 
         $options = new backup_nested_element('columnconnector', ['id'], [
             'questionid', 'numcolumns', 'layoutmode', 'linestyle', 'showclear', 'showmissing',
-            'correctpoints', 'incorrectpoints', 'missingpoints',
-            'instructions', 'instructionsformat', 'content',
+            'correctpoints', 'incorrectpoints', 'missingpoints', 'content',
         ]);
 
         $pluginwrapper->add_child($options);
 
         $options->set_source_table('qtype_columnconnector', ['questionid' => backup::VAR_PARENTID]);
 
-        // Lahtrite pilte ei annoteerita siin: need asuvad küsimuse kontekstis, mitte
-        // varundusülesande kontekstis. Need varundab ja taastab core get_qtype_fileareas() kaudu.
+        // Lahtrite pilte ei annoteerita siin: need asuvad küsimuse kontekstis. Need varundab
+        // ja taastab tuum get_qtype_fileareas() kaudu.
 
         return $plugin;
     }

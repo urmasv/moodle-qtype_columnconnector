@@ -22,27 +22,47 @@ H5P sisutüüpi **H5P.ColumnConnector**.
 
 ## Nõuded
 
-- Moodle 4.1 või uuem (`$plugin->requires = 2022112800`).
-- PHP 8.1+.
+- Moodle 4.1 kuni 5.3 (`$plugin->requires = 2022112800`, `$plugin->supported = [401, 503]`).
+- PHP vastavalt Moodle'i versioonile: Moodle 4.1 PHP 7.4–8.1, Moodle 4.5 PHP 8.1–8.3,
+  Moodle 5.0–5.1 PHP 8.2+, Moodle 5.2–5.3 PHP 8.3–8.4.
+- Moodle 5.3 andmebaasinõuded kehtivad ka siin (nt PostgreSQL 17, MariaDB 11.4, MySQL 8.4).
 
 ## Paigaldus
 
-1. Kopeeri kaust asukohta `question/type/columnconnector` (nii et failid on
-   `question/type/columnconnector/version.php` jne).
+1. Kopeeri plugina kaust nimega `columnconnector` küsimusetüüpide kausta:
+   - Moodle 5.1 ja uuemad: `public/question/type/columnconnector`
+     (nii et fail on `public/question/type/columnconnector/version.php`);
+   - Moodle 4.1–5.0: `question/type/columnconnector`.
 2. Logi sisse administraatorina ja käivita andmebaasi uuendus
-   (Saidi haldus → Teavitused).
-3. Uuendamisel puhasta vahemälud (Saidi haldus → Arendus → Puhasta
-   vahemälud), et uus JavaScript ja CSS laaditaks.
+   (Saidi haldus → Teavitused) või `php admin/cli/upgrade.php`.
+3. Uuendamisel puhasta vahemälud (Saidi haldus → Arendus → Puhasta vahemälud).
 
-Zip-paigalduseks pane hoidla juur (see kaust) `.zip`-i nii, et arhiivi sees on
-kaust `columnconnector/`.
+ZIP-failist paigaldamisel (Saidi haldus → Pluginad → Paigalda plugin) nimetab Moodle
+arhiivi juurkausta ise `version.php` järgi ümber, seega sobib ka GitHubist alla laaditud
+`moodle-qtype_columnconnector-main.zip`.
+
+## Versioonilt 1.1 uuendamine
+
+Eraldi väli „Juhis õppijale“ on eemaldatud – juhis kuulub küsimuse teksti. Uuendusskript
+tõstab olemasoleva juhise küsimuse tekstiks, kui küsimuse tekst on tühi; muul juhul jääb
+küsimuse tekst muutmata. Sama tehakse vanade Moodle XML failide impordil ja vanade
+varukoopiate taastamisel.
 
 ## Kasutamine
 
 Lisa küsimustepanka uus **„Ühenda joontega"** küsimus. Määra tulpade arv ja
 paigutus, täida tulpade pealkirjad ja lahtrid ning märgi igal 2.–7. tulba
-lahtril õiged ühendused eelmise tulba lahtritega. Soovi korral impordi sisu
-olemasolevast `.h5p`-failist väljaga **„Impordi H5P-st"**.
+lahtril õiged ühendused eelmise tulba lahtritega (vähemalt üks ühendus on kohustuslik).
+Soovi korral impordi sisu olemasolevast `.h5p`-failist väljaga **„Impordi H5P-st"**
+(administraator peab selle plugina seadetes lubama).
+
+Õppija valib lahtri ja seejärel naabertulba lahtri. Sama paari uuesti valimine eemaldab
+ühenduse; ühenduse saab eemaldada ka joonele klõpsates. Kõik toimib ka klaviatuuriga
+(Tab, Enter/tühik, Escape tühistab valiku) ning muudatustest antakse ekraanilugejale teada.
+
+Ülevaates näidatakse õppija joonte õigsust vastavalt testi sättele „Kas õige“. Puuduvad
+õiged ühendused näidatakse ainult siis, kui on lubatud nii testi säte „Õige vastus“ kui ka
+küsimuse säte „Näita puuduvaid ühendusi“.
 
 ## Hindamine
 
@@ -51,9 +71,21 @@ olemasolevast `.h5p`-failist väljaga **„Impordi H5P-st"**.
     punktid = max(0, punktid)
     murdosa = punktid / (õigete_koguarv × correctpoints)   (0..1)
 
+Punktid õige ühenduse eest peavad olema suuremad kui null, vale ja puuduva ühenduse
+eest null või negatiivsed.
+
 Ühendused on suunast sõltumatud (A–B = B–A), duplikaate ei arvestata.
 Lahtrite kuvamisjärjekord segatakse iga katse alguses; hindamine kasutab
 lahtrite püsivaid indekseid, seega segamine tulemust ei mõjuta.
+
+## Ümberhindamine ja statistika
+
+Igal lahtril on püsiv id, mis säilib lahtri toimetamisel ja teisaldamisel. Testi
+ümberhindamine küsimuse uue versiooniga on lubatud ainult siis, kui igas tulbas on samad
+lahtrid samas järjekorras; lahtri sisu ja õigete ühenduste parandamine on lubatud.
+
+Vastuste analüüsis on iga naabertulpade lahtripaar eraldi osa, kus loetakse, mitu
+õppijat selle paari ühendas ja mitu jättis ühendamata.
 
 ## Näidisküsimused
 

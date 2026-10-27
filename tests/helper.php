@@ -22,15 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Loob columnconnector testküsimusi.
  */
 class qtype_columnconnector_test_helper extends question_test_helper {
-
     /**
-     * @return array saadaolevate testküsimuste nimed
+     * Saadaolevate testküsimuste nimed.
+     *
+     * @return array
      */
     public function get_test_questions() {
         return ['twocolumn'];
@@ -69,7 +68,7 @@ class qtype_columnconnector_test_helper extends question_test_helper {
      *
      * @return qtype_columnconnector_question
      */
-    public static function make_columnconnector_question_twocolumn() {
+    public static function make_columnconnector_question_twocolumn(): qtype_columnconnector_question {
         question_bank::load_question_definition_classes('columnconnector');
         $q = new qtype_columnconnector_question();
         test_question_maker::initialise_a_question($q);
@@ -82,11 +81,10 @@ class qtype_columnconnector_test_helper extends question_test_helper {
         $q->layoutmode = 'columns';
         $q->linestyle = 'curved';
         $q->showclear = 1;
+        $q->showmissing = 1;
         $q->correctpoints = 1;
         $q->incorrectpoints = -1;
         $q->missingpoints = 0;
-        $q->instructions = '<p>Ühenda paarid.</p>';
-        $q->instructionsformat = FORMAT_HTML;
 
         $content = self::twocolumn_content();
         $q->columns = $content['columns'];
@@ -100,7 +98,7 @@ class qtype_columnconnector_test_helper extends question_test_helper {
      *
      * @return stdClass
      */
-    public function get_columnconnector_question_form_data_twocolumn() {
+    public function get_columnconnector_question_form_data_twocolumn(): stdClass {
         $form = new stdClass();
         $form->name = 'Tulpade ühendaja (2 tulpa)';
         $form->questiontext = ['text' => 'Ühenda lahtrid.', 'format' => FORMAT_HTML];
@@ -111,10 +109,10 @@ class qtype_columnconnector_test_helper extends question_test_helper {
         $form->layoutmode = 'columns';
         $form->linestyle = 'curved';
         $form->showclear = 1;
+        $form->showmissing = 1;
         $form->correctpoints = 1;
         $form->incorrectpoints = -1;
         $form->missingpoints = 0;
-        $form->instructions = '<p>Ühenda paarid.</p>';
         $form->contentjson = json_encode(self::twocolumn_content());
 
         return $form;

@@ -27,17 +27,16 @@ namespace qtype_columnconnector\privacy;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\writer;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Küsimusetüüp salvestab ainult kasutaja eelistuse (uue küsimuse vaikimisi hinne),
  * mille paneb paika question_type::save_defaults_for_new_questions().
  */
 class provider implements
-        \core_privacy\local\metadata\provider,
-        \core_privacy\local\request\user_preference_provider {
-
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\user_preference_provider {
     /**
+     * Kirjelda salvestatavaid isikuandmeid.
+     *
      * @param collection $collection
      * @return collection
      */
